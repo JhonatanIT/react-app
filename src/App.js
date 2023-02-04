@@ -1,28 +1,44 @@
-import './App.css';
-import Button from './Button';
+import { Component } from "react";
 
-const styleLi = (bg = "#456") => ({
-  backgroundColor: bg,
-  color: "#fff"
-})
+class Input extends Component {
 
-const Li = ({ children }) => {
-  <li style={styleLi("#582")} className="class-li">{children}</li>
+  render() {
+    return (
+      <input
+        value={this.props.value}
+        onChange={this.props.onChange}
+      />
+    )
+  }
 }
 
-const arr = [
-  "First element",
-  "Second element",
-  "Third element"
-]
 
-function App() {
-  return (
-    <div>
-      {arr.map(el => <p key={el}>{el}</p>)}
-      <Button onClick={(e) => console.log('clicked', e)}>Soy un boton</Button>
-    </div>
-  );
+class App extends Component {
+
+  state = {
+    name: '',
+    lastName: ''
+  }
+
+  updateValues = (prop, value) => {
+    this.setState({ [prop]: value })
+  }
+
+  render() {
+    return (
+      <p>
+        Full name: {this.state.name + ' ' + this.state.lastName}
+        <Input
+          value={this.state.name}
+          onChange={e => this.updateValues('name', e.target.value)}
+        />
+        <Input
+          value={this.state.lastName}
+          onChange={e => this.updateValues('lastName', e.target.value)}
+        />
+      </p>
+    )
+  }
 }
 
 export default App;
