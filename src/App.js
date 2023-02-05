@@ -1,48 +1,34 @@
 import { useState } from 'react'
+import Card from './components/Card'
+import Container from './components/Container'
+import UserForm from './components/UserForm'
 
-const App = () => {
-  const [form, setForm] = useState({ normal: '', text: '', select: '', check: false })
-  
-  //const handleChange = () => {
-    //setForm({ normal: e.target.value })
-  //}
-  const handleChange = ({ target }) => {
-    setForm(state => ({
-      ...state,
-      [target.name]: target.type === 'checkbox' ? target.checked : target.value
-    }))
+function App() {
+  const [usuarios, setUsuarios] = useState([])
+
+  const submit = usuario => {
+    setUsuarios([
+      ...usuarios,
+      usuario,
+    ])
   }
 
-  const submit = () => {
-    console.log(form)
-  }
-
+  console.log(usuarios)
   return (
-    <div>
-      <input onChange={handleChange} name='normal' value={form.normal}/>
-
-      <textarea onChange={handleChange} name='text' value={form.text}/>
-
-      <select value={form.select} name='select' onChange={handleChange}>
-        <option value=''>-- Seleccione --</option>
-        <option value='chanchofeliz'>Chancho feliz</option>
-        <option value='chanchitofeliz'>Chanchito feliz</option>
-        <option value='chanchitotriste'>Chanchito triste</option>
-        <option value='felipe'>Felipe</option>
-      </select>
-      <input
-        type="checkbox"
-        onChange={handleChange}
-        name='check'
-        checked={form.check}
-      />
-      <div onChange={handleChange}>
-        <label>Chancho</label>
-        <input type='radio' value='feliz' name='estado' /> Feliz
-        <input type='radio' value='triste' name='estado' /> Triste
-        <input type='radio' value='emocionado' name='estado' /> Emocionado
-      </div>
-      <button onClick={submit}>Enviar</button>
+    <div style={{ marginTop: '15%' }}>
+    <Container>
+      <Card>
+        <div style={{ padding: 20 }}>
+          <UserForm submit={submit} />
+        </div>
+      </Card>
+      <Card>
+        <ul>
+          {usuarios.map(x =>
+          <li key={x.email}>{`${x.name} ${x.lastname}: ${x.email}`}</li>)}
+        </ul>
+      </Card>
+    </Container>
     </div>
   )
 }
