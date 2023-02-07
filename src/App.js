@@ -1,37 +1,50 @@
-import { useState, useCallback, useMemo } from 'react'
-import Title from './components/Title'
-import MyForm from './components/Forms/MyForm'
-import MyList from './components/Lists/MyList'
+import { createContext, Component, useContext } from 'react'
 
-function App() {
-  const [valores, setValores] = useState([])
-  const handleSubmit = useCallback((values) => {        //useCallback return the same instance of a callback(function) (memo of functions)
-    setValores(data => ([
-      ...data,      //data is always changing
-      values
-    ]))
-  }, [])      //2nd arg of useCallback is the dependent object
+const Context1 = createContext('mi primer context')
+const Context2 = createContext('mi segundo context')
 
-  const iterador = 5000000
-  console.time('memo')
-
-  // useMemo: memoized functions that are really timing 
-  const memoized = useMemo(() => {
-    let total = 0
-    for (let i = 0; i < iterador; i++) {
-      total = total * iterador;
-    }
-    return total
-  }, [iterador])   //dependencies, like args of the function
-  console.timeEnd('memo')
-
+const Provider = ({ children }) => {
   return (
-    <div>
-      <Title>Mi título</Title>
-      <MyForm onSubmit={handleSubmit} />
-      <MyList data={valores} />
-    </div>
-  );
+    <Context1.Provider value="valor 1">
+      <Context2.Provider value="valor 2">
+        {children}
+      </Context2.Provider>
+    </Context1.Provider>
+  )
 }
 
-export default App;
+
+//Context1.Consumer: obtain value of the context in Objects Component based
+class Componente extends Component {
+  render() {
+    return (
+      <Context1.Consumer>       
+        {
+          valor1 =>
+            <Context2.Consumer>
+              {valor2 => <div>{`${valor1} ${valor2}`}</div>}
+            </Context2.Consumer>
+        }
+      </Context1.Consumer>
+    )
+  }
+}
+
+const Componente2 = () => {
+  const valor1 = useContext(Context1)
+  const valor2 = useContext(Context2)
+  return (
+    <div>{`${valor1} ${valor2}`}</div>
+  )
+}
+
+const App = () => {
+  return (
+    <Provider>
+      <Componente />
+      <Componente2 />
+    </Provider>
+  )
+}
+
+export default App
