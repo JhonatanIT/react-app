@@ -1,77 +1,36 @@
-import { useState } from 'react'
-import styled from 'styled-components'
-import { Formik, Form } from 'formik'
-import * as Yup from 'yup'
-import Input from './components/Input'
-import Button from './components/Button'
-import Balance from './components/Balance'
-
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  height: 100%;
-  align-items: center;
-`
-
-const Section = styled.section`
-  background-color: #eee;
-  border-top: solid 2px palevioletred;
-  padding: 20px 25px;
-  width: 500px;
-  box-shadow: 0px 2px 3px rgb(0,0,0,0.3);
-`
-const compoundInterest = (deposit, contribution, years, rate) => {
-  let total = deposit
-  for (let i = 0; i < years; i++) {
-    total = (total + contribution) * (rate + 1)
-  }
-
-  return Math.round(total)
-}
-
-const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})
+import { useState, useCallback, useMemo } from 'react'
+import Title from './components/Title'
+import MyForm from './components/Forms/MyForm'
+import MyList from './components/Lists/MyList'
 
 function App() {
-  const [balance, setBalance] = useState('')
-  const handleSubmit = ({ deposit, contribution, years, rate }) => {
-    const val = compoundInterest(Number(deposit), Number(contribution), Number(years), Number(rate))
-    setBalance(formatter.format(val))
-  }
+  const [valores, setValores] = useState([])
+  const handleSubmit = useCallback((values) => {        //useCallback return the same instance of a callback(function) (memo of functions)
+    setValores(data => ([
+      ...data,      //data is always changing
+      values
+    ]))
+  }, [])      //2nd arg of useCallback is the dependent object
+
+  const iterador = 5000000
+  console.time('memo')
+
+  // useMemo: memoized functions that are really timing 
+  const memoized = useMemo(() => {
+    let total = 0
+    for (let i = 0; i < iterador; i++) {
+      total = total * iterador;
+    }
+    return total
+  }, [iterador])   //dependencies, like args of the function
+  console.timeEnd('memo')
+
   return (
-    <Container>
-      <Section>
-        <Formik
-          initialValues={{
-            deposit: '',
-            contribution: '',
-            years: '',
-            rate: '',
-          }}
-          onSubmit={handleSubmit}
-          validationSchema={Yup.object({
-            deposit: Yup.number().required('Obligatorio').typeError('Debe ser un número'),
-            contribution: Yup.number().required('Obligatorio').typeError('Debe ser un número'),
-            years: Yup.number().required('Obligatorio').typeError('Debe ser un número'),
-            rate: Yup.number().required('Obligatorio').typeError('Debe ser un número').min(0,'Mínimo valor es 0').max(1,'Máximo valor es 1'),
-          })}
-        >
-          <Form>
-            <Input name="deposit" label="Depósito inicial" />
-            <Input name="contribution" label="Contribución anual" />
-            <Input name="years" label="Años" />
-            <Input name="rate" label="Interés estimado"/>
-            <Button>Calcular</Button>
-          </Form>
-        </Formik>
-        
-        {balance !== '' ? <Balance>Balance final: {balance}</Balance> : null}
-      </Section>
-    </Container>
+    <div>
+      <Title>Mi título</Title>
+      <MyForm onSubmit={handleSubmit} />
+      <MyList data={valores} />
+    </div>
   );
 }
 
