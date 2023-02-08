@@ -1,11 +1,15 @@
-import { Switch, Route, Link } from 'react-router-dom'
+import { Switch, Route, Link, useHistory } from 'react-router-dom'
 
-// Link permite navegar dentro de react router. Hay que usar estos y no los anchor tag "a"
-// Switch va a seleccionar la primera ruta que encuentre e imprimirá solo esa, si no hay switch
-// va a mostrar todo siempre que se encuentre en la ruta
-// mostrar ejemplo cuando no se usa switch
-//
 function App() {
+  const history = useHistory()
+  console.log({ history })
+  const forward = () => {
+    history.goForward()
+  }
+  
+  const back = () => {
+    history.goBack()
+  }
   return (
     <div>
       <nav>
@@ -22,6 +26,8 @@ function App() {
         </ul>
       </nav>
       <section>
+        <button onClick={back}>Atras</button>
+        <button onClick={forward}>Adelante</button>
         <Switch>
           <Route path="/portafolio">
             <h1>Portafolio</h1>
@@ -42,3 +48,4 @@ function App() {
 }
 
 export default App;
+

@@ -19,6 +19,9 @@ function App() {
           <li>
             <Link to="/perfil">Perfil</Link>
           </li>
+          <li>
+            <Link to="/esto-no-existe">A un lugar extraño</Link>
+          </li>
         </ul>
       </nav>
       <section>
@@ -29,7 +32,7 @@ function App() {
           <Route path="/perfil">
             <h1>Perfil</h1>
           </Route>
-          <Route path="/">
+          <Route exact path="/">
             <h1>Inicio</h1>
           </Route>
           <Route path="*">

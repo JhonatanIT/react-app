@@ -1,11 +1,17 @@
-import { Switch, Route, Link } from 'react-router-dom'
+import { Switch, Route, Link, useLocation, useEffect } from 'react-router-dom'
 
-// Link permite navegar dentro de react router. Hay que usar estos y no los anchor tag "a"
-// Switch va a seleccionar la primera ruta que encuentre e imprimirá solo esa, si no hay switch
-// va a mostrar todo siempre que se encuentre en la ruta
-// mostrar ejemplo cuando no se usa switch
-//
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 function App() {
+  //const location = useLocation()
+  //console.log({ location })
+  //useEffect(() => {
+    //ga.send(["pageview", location.pathname]);
+  //}, [location])
+  const query = useQuery()
+  console.log(query.get('chanchito'))
   return (
     <div>
       <nav>
@@ -42,3 +48,4 @@ function App() {
 }
 
 export default App;
+

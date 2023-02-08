@@ -1,15 +1,10 @@
-/*UPDATE:
-  use Routes instead of Switch
-  No use useRouteMatch
-  In nested routes use * like: '/portafolio/*'
-*/
-
-import { Route, Link, useParams, Routes } from 'react-router-dom'
+import { Switch, Route, Link, useRouteMatch, useParams } from 'react-router-dom'
 
 const Proyecto = () => {
-  const params = useParams()// no devuelve la ruta del proyecto, devuelve la ruta del componente!!
+  const params = useParams()
+  const match = useRouteMatch() // no devuelve la ruta del proyecto, devuelve la ruta del componente!!
 
-  console.log({ params })
+  console.log({ params, match })
   return (
     <p>
       proyecto...
@@ -18,28 +13,31 @@ const Proyecto = () => {
 }
 
 const Portafolio = () => {
+  const match = useRouteMatch()
   const params = useParams() // mostrar que no se obtienen los parametros de la ruta, si no que del componente siempre que este acepte con el componente de Route
-  console.log({ params }, 'lala')
+  console.log({ match, params }, 'lala')
 
   return (
     <div>
       <h1>Portafolio</h1>
       <ul>
         <li>
-          <Link to={`proyecto-1`}>Proyecto 1</Link>
+          <Link to={`${match.url}/proyecto-1`}>Proyecto 1</Link>
         </li>
         <li>
-          <Link to={`proyecto-2`}>Proyecto 2</Link>
+          <Link to={`${match.url}/proyecto-2`}>Proyecto 2</Link>
         </li>
         <li>
-          <Link to={`proyecto-3`}>Proyecto 3</Link>
+          <Link to={`${match.url}/proyecto-3`}>Proyecto 3</Link>
         </li>
       </ul>
       <div>
-        <Routes>
+        <Switch>
           {/* primero con proyecto-1 y proyecto-2, luego con :id */}
-          <Route path={`:id`} element={<Proyecto />} />
-        </Routes>
+          <Route path={`${match.path}/:id`}>
+            <Proyecto />
+          </Route>
+        </Switch>
       </div>
     </div>
   )
@@ -61,11 +59,17 @@ function App() {
         </ul>
       </nav>
       <section>
-        <Routes>
-          <Route path="/portafolio/*" element={<Portafolio />} />
-          <Route path="/perfil" element={<h1>Perfil</h1>} />
-          <Route path="/" element={<h1>Inicio</h1>} />
-        </Routes>
+        <Switch>
+          <Route path="/portafolio">
+            <Portafolio />
+          </Route>
+          <Route path="/perfil">
+            <h1>Perfil</h1>
+          </Route>
+          <Route path="/">
+            <h1>Inicio</h1>
+          </Route>
+        </Switch>
       </section>
     </div>
   );
