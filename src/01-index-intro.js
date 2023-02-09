@@ -1,24 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, applyMiddleware } from 'redux'
-import { Provider } from 'react-redux'
+import { createStore } from 'redux'
 import App from './App';
-import { asyncMiddleware } from './middlewares/aync'
-import { reducer } from './features/todos';
 import reportWebVitals from './reportWebVitals';
 
-const args = [
-  reducer,
-  asyncMiddleware ? applyMiddleware(asyncMiddleware) : undefined
-]
+const reducer = (state = 0, action) => {
+  console.log({state, action})
+  switch(action.type) {
+    case 'incrementar':
+      return state + 1
+    case 'decrementar':
+      return state - 1
+    default:
+      return state
+  }
+}
 
-const store = createStore(...args)
+const store = createStore(reducer)
+
+console.log({ store })
+
+store.dispatch({ type: 'lala' })
+store.dispatch({ type: 'incrementar' })
+store.dispatch({ type: 'incrementar' })
+console.log('state', store.getState())
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
       <App />
-    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
